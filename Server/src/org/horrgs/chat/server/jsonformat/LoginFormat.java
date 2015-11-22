@@ -13,29 +13,10 @@ public class LoginFormat extends Module {
         super(format, keys, values);
     }
     @Override
-    public RequestType getRequestType() {
-        return super.getRequestType();
-    }
-
-    @Override
-    public void setRequestType(RequestType requestType) {
-        super.setRequestType(requestType);
-    }
-
-    @Override
-    public String getJsonFormat() {
-        return super.getJsonFormat();
-    }
-
-    @Override
     public void setJsonFormat(String jsonFormat) {
         super.setJsonFormat(jsonFormat);
     }
 
-    @Override
-    public <T> T getValue(String key) {
-        return super.getValue(key);
-    }
 
     public String getPassword() {
         return password;

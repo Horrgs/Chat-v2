@@ -2,9 +2,6 @@ package org.horrgs.chat.server.jsonformat;
 
 import org.horrgs.chat.server.exceptions.FormatKeysException;
 
-import java.text.Normalizer;
-import java.util.Objects;
-
 /**
  * Created by Horrgs on 11/21/2015.
  */
@@ -25,31 +22,6 @@ public class CreateAccountFormat extends Module {
     @Format(requestType = RequestType.CREATE_ACCOUNT)
     public CreateAccountFormat(Module format, String[] keys, String... values) throws FormatKeysException {
         super(getInstance(), keys, values);
-    }
-
-    @Override
-    public RequestType getRequestType() {
-        return requestType;
-    }
-
-    @Override
-    public void setRequestType(RequestType requestType) {
-        super.setRequestType(requestType);
-    }
-
-    @Override
-    public String getJsonFormat() {
-        return jsonFormat;
-    }
-
-    @Override
-    public void setJsonFormat(String jsonFormat) {
-        super.setJsonFormat(jsonFormat);
-    }
-
-    @Override
-    public <T> T getValue(String key) {
-        return (T) super.getValue(key);
     }
 
     public String getUsername() {

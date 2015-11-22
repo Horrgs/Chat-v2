@@ -48,7 +48,7 @@ public abstract class Module {
         }
 
         jsonFormat += "}";
-        setRequestType(requestType.getByName((String) getValue("requestType")));
+        setRequestType(RequestType.getByName((String) getValue("requestType")));
     }
     public RequestType getRequestType() {
         return requestType;

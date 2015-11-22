@@ -17,7 +17,7 @@ public enum RequestType {
         return name;
     }
 
-    public RequestType getByName(String name) {
+    public static RequestType getByName(String name) {
         for(RequestType rank : RequestType.values()) {
             if(rank.getName().equals(name)) {
                 return rank;
