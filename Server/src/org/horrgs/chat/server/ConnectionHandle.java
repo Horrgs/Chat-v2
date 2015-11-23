@@ -3,9 +3,9 @@ package org.horrgs.chat.server;
 import com.google.gson.Gson;
 import org.horrgs.chat.server.exceptions.DataInUseException;
 import org.horrgs.chat.server.exceptions.FormatKeysException;
-import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
-import org.horrgs.chat.server.jsonformat.ErrorFormat;
-import org.horrgs.chat.server.jsonformat.RequestType;
+import org.horrgs.chat.server.exceptions.UserNotFoundException;
+import org.horrgs.chat.server.jsonformat.*;
+import org.horrgs.chat.server.userdata.User;
 import org.horrgs.chat.server.userdata.UserManager;
 import org.horrgs.chat.server.windows.Console;
 
@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Horrgs on 11/22/2015.
@@ -75,6 +74,25 @@ public class ConnectionHandle implements Runnable {
                             ex.printStackTrace();
                         }
                         break;
+                    case LOGIN:
+                        LoginFormat loginFormat = gson.fromJson(receivingMessage, LoginFormat.class);
+                        UserManager userManager = new UserManager();
+                        try {
+                            if(userManager.doesDataMatch(loginFormat)) {
+                                userManager = new UserManager(userManager.getUsername(), true);
+                                User user = userManager.getUser();
+                                if(user != null) {
+                                    keys = new String[1];
+                                    keys[0] = "succession";
+                                    SuccessionFormat succession = new SuccessionFormat(SuccessionFormat.getInstance(), keys, RequestType.LOGIN.getName());
+                                    PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
+                                    printWriter.println(succession.getJsonFormat());
+                                    printWriter.flush();
+                                }
+                            }
+                        } catch (UserNotFoundException | FormatKeysException ex) {
+                            ex.printStackTrace();
+                        }
                 }
 
             }
@@ -96,5 +114,6 @@ public class ConnectionHandle implements Runnable {
         } else {
             return RequestType.getByName(jsonFormat.split("\"")[3]);
         }
+        return null;
     }
 }

@@ -22,6 +22,8 @@ public class SuccessionFormat extends Module {
     public Rank getRank() {
         return getValue("rank");
     }
+    //TODO: I might remove getRank() for succession as sending this info to the client
+    //they could hack it to make channels think their rank is higher.
 
     public RequestType getSuccessionIn() {
         return getValue("succession");
