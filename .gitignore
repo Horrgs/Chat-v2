@@ -12,3 +12,4 @@ bin-release/
 *.name
 *.xml
 *.iml
+*.class
