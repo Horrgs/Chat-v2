@@ -14,9 +14,14 @@ public abstract class User {
     private String username, password, email;
     private boolean online;
     private Rank rank;
+    private User user;
 
     public User(String username) {
         this(username, false);
+    }
+
+    public User() {
+        super();
     }
 
     public User(String username, boolean online) {
@@ -38,6 +43,7 @@ public abstract class User {
                 setPassword(jsonObject.get("password").getAsString());
                 setRank(Rank.getByName(jsonObject.get("rank").getAsString()));
                 setOnline(online);
+                setUser(this);
             }
         }
     }
@@ -56,6 +62,9 @@ public abstract class User {
     public boolean isOnline(){
         return online;
     }
+    public User getUser() {
+        return user;
+    }
     //public Status getStatus(){\n}//TODO: status.
     public void setUsername(String username){
         this.username = username;
@@ -71,6 +80,9 @@ public abstract class User {
     }
     public void setOnline(boolean online){
         this.online = online;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
     //public void setStatus(Status status){\n} //TODO: status
 }
