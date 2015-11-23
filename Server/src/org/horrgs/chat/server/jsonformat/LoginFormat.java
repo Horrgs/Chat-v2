@@ -7,7 +7,13 @@ import org.horrgs.chat.server.exceptions.FormatKeysException;
  */
 public class LoginFormat extends Module {
     private String email, username, password;
-
+    private static LoginFormat instance = new LoginFormat();
+    public static LoginFormat getInstance() {
+        return instance;
+    }
+    public LoginFormat() {
+        super();
+    }
     @Format(requestType = RequestType.LOGIN)
     public LoginFormat(Module format, String[] keys, String... values) throws FormatKeysException {
         super(format, keys, values);
