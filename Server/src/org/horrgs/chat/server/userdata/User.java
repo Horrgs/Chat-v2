@@ -3,6 +3,8 @@ package org.horrgs.chat.server.userdata;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.horrgs.chat.server.exceptions.DataNonExistentException;
+import org.horrgs.chat.server.exceptions.UserNotFoundException;
 import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
 
 import java.io.FileReader;
@@ -16,7 +18,7 @@ public abstract class User {
     private Rank rank;
     private User user;
 
-    public User(String username) {
+    public User(String username) throws UserNotFoundException {
         this(username, false);
     }
 
@@ -24,7 +26,7 @@ public abstract class User {
         super();
     }
 
-    public User(String username, boolean online) {
+    public User(String username, boolean online) throws UserNotFoundException {
         JsonParser jsonParser = new JsonParser();
         JsonArray jsonArray = null;
         try {
@@ -42,10 +44,12 @@ public abstract class User {
                 setUsername(jsonObject.get("username").getAsString());
                 setPassword(jsonObject.get("password").getAsString());
                 setRank(Rank.getByName(jsonObject.get("rank").getAsString()));
-                setOnline(online);
+                setOnline(online); //TODO: if true, should add to those online list in UserManager.
                 setUser(this);
+                return;
             }
         }
+        throw new UserNotFoundException("No user with the username \"" + username + "\" exists.");
     }
     public String getUsername() {
         return username;

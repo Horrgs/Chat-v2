@@ -6,12 +6,9 @@ import com.google.gson.JsonParser;
 import org.horrgs.chat.server.exceptions.DataInUseException;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
 import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
+import org.horrgs.chat.server.jsonformat.LoginFormat;
 
-import javax.xml.crypto.Data;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +22,11 @@ public class UserManager extends User {
         super();
     }
 
-    public UserManager(String username) {
+    public UserManager(String username) throws UserNotFoundException {
         super(username);
     }
 
-    public UserManager(String username, boolean online) {
+    public UserManager(String username, boolean online) throws UserNotFoundException {
         super(username, online);
     }
 
@@ -141,6 +138,67 @@ public class UserManager extends User {
             }
         }
         throw new UserNotFoundException("User " + username + " was not found!");
+    }
+
+    public boolean isPasswordCorrect(String username, String password) {
+        if(isUsernameTaken(username)) {
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = null;
+            try {
+                Object obj = jsonParser.parse(new FileReader("secrets.json"));
+                jsonArray = (JsonArray) obj;
+                System.out.println("Parsing secrets.json ....");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+            for(int x = 0; x < jsonArray.size(); x++) {
+                JsonObject jsonObject = jsonArray.get(x).getAsJsonObject();
+                if(jsonObject.get("username").getAsString().equals(username)) {
+                    if(jsonObject.get("password").getAsString().equals(password)) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean doesDataMatch(String email, String username, String password) {
+        /*
+        The reason I don't use isUsernameTaken() is because isPasswordCorrect(String username, String password)
+        already checks for that and would throw that if the username doesn't exist.
+        */
+        if (isEmailInUse(email) && isPasswordCorrect(username, password)) {
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = null;
+            try {
+                Object obj = jsonParser.parse(new FileReader("secrets.json"));
+                jsonArray = (JsonArray) obj;
+                System.out.println("Parsing secrets.json ....");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+                return false;
+            }
+            for (int x = 0; x < jsonArray.size(); x++) {
+                JsonObject jsonObject = jsonArray.get(x).getAsJsonObject();
+                if (jsonObject.get("email").getAsString().equals(email) && jsonObject.get("username").getAsString().equals(username) &&
+                        jsonObject.get("password").getAsString().equals(username)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public boolean doesDataMatch(CreateAccountFormat createAccountFormat) {
+        return doesDataMatch(createAccountFormat.getEmail(), createAccountFormat.getUsername(), createAccountFormat.getPassword());
+    }
+
+    public boolean doesDataMatch(LoginFormat loginFormat) {
+        return doesDataMatch(loginFormat.getEmail(), loginFormat.getUsername(), loginFormat.getPassword());
     }
 
 }
