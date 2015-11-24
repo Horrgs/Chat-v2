@@ -18,7 +18,11 @@ public class ErrorFormat extends Module {
         super(format, keys, values);
     }
 
-    public String getMessage() {
-        return getValue("message");
+    public String getError() {
+        return getValue("error");
+    }
+
+    public long getVersion() {
+        return getValue("version");
     }
 }

@@ -45,7 +45,7 @@ public class ConnectionHandle implements Runnable {
 
     @Override
     public void run() {
-        String[] keys = new String[0];
+        String[] keys;
         String receivingMessage;
         try {
             while((receivingMessage = bufferedReader.readLine()) != null) {
@@ -93,6 +93,12 @@ public class ConnectionHandle implements Runnable {
                         } catch (UserNotFoundException | FormatKeysException ex) {
                             ex.printStackTrace();
                         }
+                        break;
+                    case ERROR:
+                        ErrorFormat errorFormat = gson.fromJson(receivingMessage, ErrorFormat.class);
+                        FileManager fileManager = new FileManager();
+                        fileManager.logError(errorFormat);
+                        break;
                 }
 
             }
