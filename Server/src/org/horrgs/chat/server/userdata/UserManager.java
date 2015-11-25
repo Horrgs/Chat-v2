@@ -3,6 +3,7 @@ package org.horrgs.chat.server.userdata;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.horrgs.chat.server.FileManager;
 import org.horrgs.chat.server.exceptions.DataInUseException;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
 import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
@@ -38,24 +39,17 @@ public class UserManager extends User {
             throw new DataInUseException("That username is already being used!");
         }
 
-        JsonArray jsonObject = new JsonArray();
-        JsonParser jsonParser = new JsonParser();
-        try {
-            Object obj = jsonParser.parse(new FileReader("users.json"));
-            jsonObject = (JsonArray) obj;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         try {
             JsonObject email = new JsonObject();
-            jsonObject.add(email);
+            jsonArray.add(email);
             email.addProperty("email", createAccountFormat.getEmail());
             email.addProperty("username", createAccountFormat.getUsername());
             email.addProperty("password", createAccountFormat.getPassword());
             //email.addProperty("status", Status.ONLINE.getId());
             email.addProperty("rank", Rank.USER.getName());
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("users.json"));
-            bufferedWriter.write(jsonObject.toString());
+            bufferedWriter.write(jsonArray.toString());
             bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException ex) {
@@ -64,16 +58,7 @@ public class UserManager extends User {
     }
 
     public boolean isUsernameTaken(String username) {
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader("secrets.json"));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         for(int x = 0; x < jsonArray.size(); x++) {
             JsonObject jsonObject = (JsonObject) jsonArray.get(x);
             if(jsonObject.get("username").equals(username)) {
@@ -88,16 +73,7 @@ public class UserManager extends User {
     }
 
     public boolean isEmailInUse(String email) {
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader("secrets.json"));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         for(int x = 0; x < jsonArray.size(); x++) {
             JsonObject jsonObject = (JsonObject) jsonArray.get(x);
             if(jsonObject.get("email").getAsString().equals(email)) {
@@ -120,16 +96,7 @@ public class UserManager extends User {
                 return user;
             }
         }
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader("secrets.json"));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         for (int x = 0; x < jsonArray.size(); x++) {
             JsonObject jsonObject = jsonArray.get(x).getAsJsonObject();
             if(jsonObject.get("username").getAsString().equals(username)) {
@@ -142,16 +109,7 @@ public class UserManager extends User {
 
     public boolean isPasswordCorrect(String username, String password) {
         if(isUsernameTaken(username)) {
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArray = null;
-            try {
-                Object obj = jsonParser.parse(new FileReader("secrets.json"));
-                jsonArray = (JsonArray) obj;
-                System.out.println("Parsing secrets.json ....");
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-                return false;
-            }
+            JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
             for(int x = 0; x < jsonArray.size(); x++) {
                 JsonObject jsonObject = jsonArray.get(x).getAsJsonObject();
                 if(jsonObject.get("username").getAsString().equals(username)) {
@@ -171,16 +129,7 @@ public class UserManager extends User {
         already checks for that and would throw that if the username doesn't exist.
         */
         if (isEmailInUse(email) && isPasswordCorrect(username, password)) {
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArray = null;
-            try {
-                Object obj = jsonParser.parse(new FileReader("secrets.json"));
-                jsonArray = (JsonArray) obj;
-                System.out.println("Parsing secrets.json ....");
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-                return false;
-            }
+            JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
             for (int x = 0; x < jsonArray.size(); x++) {
                 JsonObject jsonObject = jsonArray.get(x).getAsJsonObject();
                 if (jsonObject.get("email").getAsString().equals(email) && jsonObject.get("username").getAsString().equals(username) &&

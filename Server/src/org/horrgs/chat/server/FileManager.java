@@ -41,13 +41,9 @@ public class FileManager {
     }
 
     public void logError(ErrorFormat errorFormat) {
-        JsonArray jsonArray = null;
+        JsonArray jsonArray = (JsonArray) parseJson(errors);
         BufferedWriter bufferedWriter = null;
         try {
-            JsonParser jsonParser = new JsonParser();
-            Object obj = jsonParser.parse(new FileReader(errors));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing errors.json ....");
             bufferedWriter = new BufferedWriter(new FileWriter(errors));
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -88,16 +84,7 @@ public class FileManager {
     }
 
     public boolean doesErrorExist(String error) {
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader(errors));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        JsonArray jsonArray = (JsonArray) parseJson(errors);
         for (int x = 0; x < jsonArray.size(); x++) {
             if (jsonArray.get(x).getAsJsonObject().get("error").getAsString().equals(error)) {
                 return true;
@@ -107,16 +94,7 @@ public class FileManager {
     }
 
     public boolean hasVersion(long version) {
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader(errors));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        JsonArray jsonArray = (JsonArray) parseJson(errors);
         for (int x = 0; x < jsonArray.size(); x++) {
             for (int i = 0; i < jsonArray.get(x).getAsJsonObject().get("versions").getAsJsonArray().size(); i++) {
                 if(jsonArray.get(x).getAsJsonObject().get("versions").getAsJsonArray().get(i).getAsLong() == version) {
@@ -148,5 +126,9 @@ public class FileManager {
             return null;
         }
         return jsonElement;
+    }
+
+    public JsonElement parseJson(File file) {
+        return parseJson(file.getName());
     }
 }

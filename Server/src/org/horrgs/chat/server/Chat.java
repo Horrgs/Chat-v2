@@ -1,6 +1,5 @@
 package org.horrgs.chat.server;
 
-import org.horrgs.chat.server.jsonformat.RequestType;
 import org.horrgs.chat.server.windows.Console;
 
 /**

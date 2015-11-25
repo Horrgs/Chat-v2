@@ -3,6 +3,7 @@ package org.horrgs.chat.server.userdata;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.horrgs.chat.server.FileManager;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
 
 import java.io.FileReader;
@@ -25,16 +26,7 @@ public abstract class User {
     }
 
     public User(String username, boolean online) throws UserNotFoundException {
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = null;
-        try {
-            Object obj = jsonParser.parse(new FileReader("secrets.json"));
-            jsonArray = (JsonArray) obj;
-            System.out.println("Parsing secrets.json ....");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
-        }
+        JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         for(int x = 0; x < jsonArray.size(); x++) {
             JsonObject jsonObject = (JsonObject) jsonArray.get(x);
             if(jsonObject.get("username").equals(username)) {
