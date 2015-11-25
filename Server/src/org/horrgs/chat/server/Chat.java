@@ -11,5 +11,4 @@ public class Chat {
         new FileManager().setup();
         Console.getInstance().openWindow();
     }
-
 }

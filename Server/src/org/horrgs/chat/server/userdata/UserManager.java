@@ -8,6 +8,7 @@ import org.horrgs.chat.server.exceptions.DataInUseException;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
 import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
 import org.horrgs.chat.server.jsonformat.LoginFormat;
+import org.horrgs.chat.server.jsonformat.Module;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -142,12 +143,7 @@ public class UserManager extends User {
         return false;
     }
 
-    public boolean doesDataMatch(CreateAccountFormat createAccountFormat) {
-        return doesDataMatch(createAccountFormat.getEmail(), createAccountFormat.getUsername(), createAccountFormat.getPassword());
+    public boolean doesDataMatch(Module format) {
+        return doesDataMatch((String) format.getValue("email"), (String) format.getValue("username"), (String) format.getValue("password"));
     }
-
-    public boolean doesDataMatch(LoginFormat loginFormat) {
-        return doesDataMatch(loginFormat.getEmail(), loginFormat.getUsername(), loginFormat.getPassword());
-    }
-
 }

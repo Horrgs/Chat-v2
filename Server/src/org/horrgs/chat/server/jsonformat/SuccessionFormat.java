@@ -28,6 +28,4 @@ public class SuccessionFormat extends Module {
     public RequestType getSuccessionIn() {
         return getValue("succession");
     }
-
-
 }
