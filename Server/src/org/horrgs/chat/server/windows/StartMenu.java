@@ -37,9 +37,9 @@ public class StartMenu extends JFrame {
         public void actionPerformed(ActionEvent ev) {
             ConnectionHandle connectionHandle = new ConnectionHandle();
             if(ev.getSource() == start) {
-                connectionHandle.start();
+                //connectionHandle.start();
             } else {
-                connectionHandle.end("Closed by host request.");
+                //connectionHandle.end();
             }
         }
     }
