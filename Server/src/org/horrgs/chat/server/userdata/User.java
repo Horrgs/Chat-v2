@@ -3,9 +3,7 @@ package org.horrgs.chat.server.userdata;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.horrgs.chat.server.exceptions.DataNonExistentException;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
-import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
 
 import java.io.FileReader;
 
