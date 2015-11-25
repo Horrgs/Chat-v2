@@ -13,8 +13,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Horrgs on 11/22/2015.
@@ -51,7 +53,7 @@ public class ConnectionHandle implements Runnable {
             while((receivingMessage = bufferedReader.readLine()) != null) {
                 console.appendConsole(receivingMessage);
                 Gson gson = new Gson();
-                RequestType requestType = RequestType.getByName(receivingMessage);
+                RequestType requestType = getRequestType(receivingMessage);
                 switch (requestType) {
                     case CREATE_ACCOUNT:
                         CreateAccountFormat createAccountFormat = gson.fromJson(receivingMessage, CreateAccountFormat.class);
@@ -104,6 +106,47 @@ public class ConnectionHandle implements Runnable {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+    ServerSocket serverSocket;
+    public void start() {
+        try {
+            serverSocket = new ServerSocket(5000);
+            console.appendConsole("Starting....");
+            while(true) {
+                Socket client = serverSocket.accept();
+                PrintWriter printWriter = new PrintWriter(client.getOutputStream());
+                ConnectionHandle.getInstance().clientOutputStreams.add(printWriter);
+                Thread t = new Thread(new ConnectionHandle(client));
+                t.start();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void end(String reason) {
+        try {
+            String[] keys = new String[1];
+            keys[0] = "error";
+            ErrorFormat errorFormat = new ErrorFormat(ErrorFormat.getInstance(), keys, "The server closed for the following reason: \"" + reason + "\".");
+            sendToAll(errorFormat);
+            serverSocket.close();
+        } catch (IOException | FormatKeysException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendToAll(Module format) {
+        Iterator it = ConnectionHandle.getInstance().clientOutputStreams.iterator();
+        while(it.hasNext()) {
+            try {
+                PrintWriter printWriter = (PrintWriter) it.next();
+                printWriter.println(format.getJsonFormat());
+                printWriter.flush();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
