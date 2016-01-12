@@ -16,6 +16,7 @@ public abstract class User {
     private boolean online;
     private Rank rank;
     private User user;
+    private String[] chats;
 
     public User(String username) throws UserNotFoundException {
         this(username, false);
@@ -29,11 +30,13 @@ public abstract class User {
         JsonArray jsonArray = (JsonArray) new FileManager().parseJson("users.json");
         for(int x = 0; x < jsonArray.size(); x++) {
             JsonObject jsonObject = (JsonObject) jsonArray.get(x);
-            if(jsonObject.get("username").equals(username)) {
+            if(jsonObject.get("username").getAsString().equals(username)) {
                 setEmail(jsonObject.get("email").getAsString());
                 setUsername(jsonObject.get("username").getAsString());
                 setPassword(jsonObject.get("password").getAsString());
                 setRank(Rank.getByName(jsonObject.get("rank").getAsString()));
+                setChatList(jsonObject.get("chatlist").getAsJsonArray());
+
                 setOnline(online); //TODO: if true, should add to those online list in UserManager.
                 setUser(this);
                 return;
@@ -59,6 +62,9 @@ public abstract class User {
     public User getUser() {
         return user;
     }
+    public String[] getChatList() {
+        return chats;
+    }
     //public Status getStatus(){\n}//TODO: status.
     public void setUsername(String username){
         this.username = username;
@@ -77,6 +83,9 @@ public abstract class User {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    public void setChatList(JsonArray jsonArray) {
+
     }
     //public void setStatus(Status status){\n} //TODO: status
 }

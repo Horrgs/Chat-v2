@@ -32,23 +32,23 @@ public abstract class Module {
         switch (format.getRequestType()) {
             case CREATE_ACCOUNT:
                 CreateAccountFormat createAccountFormat = (CreateAccountFormat) format;
-                createAccountFormat.setEmail((String) getValue("email"));
-                createAccountFormat.setUsername((String) getValue("username"));
-                createAccountFormat.setPassword((String) getValue("password"));
+                createAccountFormat.setEmail(getValue("email"));
+                createAccountFormat.setUsername(getValue("username"));
+                createAccountFormat.setPassword(getValue("password"));
                 createAccountFormat.setJsonFormat(jsonFormat);
                 break;
             case LOGIN:
                 LoginFormat loginFormat =  (LoginFormat) format;
-                loginFormat.setEmail((String) getValue("email"));
-                loginFormat.setUsername((String) getValue("username"));
-                loginFormat.setPassword((String) getValue("password"));
+                loginFormat.setEmail(getValue("email"));
+                loginFormat.setUsername(getValue("username"));
+                loginFormat.setPassword(getValue("password"));
                 break;
             case ERROR:
                 break;
         }
 
         jsonFormat += "}";
-        setRequestType(RequestType.getByName((String) getValue("requestType")));
+        setRequestType(RequestType.getByName(getValue("requestType")));
     }
     public RequestType getRequestType() {
         return requestType;

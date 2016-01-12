@@ -2,12 +2,10 @@ package org.horrgs.chat.server.userdata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.horrgs.chat.server.FileManager;
 import org.horrgs.chat.server.exceptions.DataInUseException;
 import org.horrgs.chat.server.exceptions.UserNotFoundException;
 import org.horrgs.chat.server.jsonformat.CreateAccountFormat;
-import org.horrgs.chat.server.jsonformat.LoginFormat;
 import org.horrgs.chat.server.jsonformat.Module;
 
 import java.io.*;
@@ -18,8 +16,11 @@ import java.util.List;
  * Created by Horrgs on 11/21/2015.
  */
 public class UserManager extends User {
+    private static UserManager instance = new UserManager();
+    public static UserManager getInstance() {
+        return instance;
+    }
     private List<User> usersOnline = new ArrayList<>();
-    private boolean online;
     public UserManager() {
         super();
     }
